@@ -11,3 +11,9 @@ func (b *BlockChain) AddBlock(data string) {
 	newBlock := block.New([]byte(data), prevBlock.Hash)
 	b.blocks = append(b.blocks, newBlock)
 }
+
+func New() *BlockChain {
+	return &BlockChain{
+		[]*block.Block{block.NewGenesis()},
+	}
+}

@@ -22,6 +22,10 @@ func (b *Block) SetHash() {
 	b.Hash = hash[:]
 }
 
+func (b *Block) IsGenesis() bool {
+	return bytes.Equal(b.PrevBlockHash, []byte{})
+}
+
 func New(data []byte, prevHash []byte) *Block {
 	b := &Block{
 		Timestamp: time.Now().Unix(),

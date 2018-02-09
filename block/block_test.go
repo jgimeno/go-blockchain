@@ -36,3 +36,16 @@ func TestWeCanCreateAGenesisBlock(t *testing.T) {
 		t.Fatal("Error creating genesis block.")
 	}
 }
+
+func TestWeCanAssertIfABlockIsAGenesisBlock(t *testing.T) {
+	notGenesis := block.New([]byte("Some data"), []byte("PreviusHash"))
+	genesis := block.NewGenesis()
+
+	if !genesis.IsGenesis() {
+		t.Fatal("Failed asserting genesis block.")
+	}
+
+	if notGenesis.IsGenesis() {
+		t.Fatal("Failed asserting that noral block is not genesis.")
+	}
+}
