@@ -22,7 +22,7 @@ func (b *Block) SetHash() {
 	b.Hash = hash[:]
 }
 
-func NewBlock(data []byte, prevHash []byte) *Block {
+func New(data []byte, prevHash []byte) *Block {
 	b := &Block{
 		Timestamp: time.Now().Unix(),
 		Data: data,

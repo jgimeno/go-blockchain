@@ -2,16 +2,16 @@ package block_test
 
 import (
 	"testing"
-	"github.com/jgimeno/blockchain/block"
 	"crypto/sha256"
 	"strconv"
 	"bytes"
+	"github.com/jgimeno/go-blockchain/block"
 )
 
 func TestWeCanCreateABlock(t *testing.T) {
 	prevHash := sha256.Sum256([]byte("Previus Hash"))
 
-	b := block.NewBlock([]byte("Send 200 to Manuel"), prevHash[:])
+	b := block.New([]byte("Send 200 to Manuel"), prevHash[:])
 
 	if !bytes.Equal(b.Hash, generateHash(b.Timestamp, prevHash[:])) {
 		t.Fatalf("Error generating the block hash.")
