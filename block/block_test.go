@@ -49,3 +49,15 @@ func TestWeCanAssertIfABlockIsAGenesisBlock(t *testing.T) {
 		t.Fatal("Failed asserting that noral block is not genesis.")
 	}
 }
+
+func TestWeCanSerializeAndDeserializeABlock(t *testing.T) {
+	b := block.New([]byte("Send 200 to Manuel"), []byte("TheHash"))
+
+	s := b.Serialize()
+
+	db := block.DeserializeBlock(s)
+
+	if !bytes.Equal(b.Data, db.Data) || !bytes.Equal(b.PrevBlockHash, db.PrevBlockHash) {
+		t.Fatalf("Error serializing block.")
+	}
+}

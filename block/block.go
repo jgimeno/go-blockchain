@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"time"
+	"encoding/gob"
 )
 
 type Block struct {
@@ -26,6 +27,18 @@ func (b *Block) IsGenesis() bool {
 	return bytes.Equal(b.PrevBlockHash, []byte{})
 }
 
+func (b *Block) Serialize() []byte {
+	var result bytes.Buffer
+	encoder := gob.NewEncoder(&result)
+
+	err := encoder.Encode(b)
+	if err != nil {
+		panic("Error encoding block.")
+	}
+
+	return result.Bytes()
+}
+
 func New(data []byte, prevHash []byte) *Block {
 	b := &Block{
 		Timestamp: time.Now().Unix(),
@@ -39,4 +52,17 @@ func New(data []byte, prevHash []byte) *Block {
 func NewGenesis() *Block {
 	b := New([]byte("Genesis block"), []byte{})
 	return b
+}
+
+func DeserializeBlock(encodedBlock []byte) *Block {
+	var block Block
+
+	decoder := gob.NewDecoder(bytes.NewReader(encodedBlock))
+	err := decoder.Decode(&block)
+
+	if err != nil {
+		panic("Error decoding block.")
+	}
+
+	return &block
 }
