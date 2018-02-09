@@ -28,3 +28,11 @@ func generateHash(timestamp int64, prevHash []byte) []byte {
 	hash := sha256.Sum256(headers)
 	return hash[:]
 }
+
+func TestWeCanCreateAGenesisBlock(t *testing.T) {
+	g := block.NewGenesis()
+
+	if bytes.Equal(g.Hash, []byte{}) {
+		t.Fatal("Error creating genesis block.")
+	}
+}

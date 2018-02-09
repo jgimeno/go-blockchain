@@ -31,3 +31,8 @@ func New(data []byte, prevHash []byte) *Block {
 	b.SetHash()
 	return b
 }
+
+func NewGenesis() *Block {
+	b := New([]byte("Genesis block"), []byte{})
+	return b
+}
