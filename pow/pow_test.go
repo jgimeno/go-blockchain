@@ -20,4 +20,15 @@ func TestUsageOfProofOfWork(t *testing.T) {
 	}
 }
 
+func TestValidateProofOfWork(t *testing.T) {
+	b := block.New([]byte("The data"), []byte("PrevHash"))
+	pow := New(b)
+
+	n, _ := pow.Run()
+
+	if !pow.Validate(n) {
+		t.Fatalf("Error validating proof of work.")
+	}
+}
+
 

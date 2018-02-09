@@ -68,3 +68,14 @@ func (pow *ProofOfWork) codifyBlock(nonce int) []byte {
 
 	return data
 }
+
+func (pow *ProofOfWork) Validate(nonce int) bool {
+	var hashInt big.Int
+
+	data := pow.codifyBlock(nonce)
+	hash := sha256.Sum256(data)
+
+	hashInt.SetBytes(hash[:])
+
+	return hashInt.Cmp(pow.target) == -1
+}
