@@ -6,10 +6,11 @@ import (
 	"github.com/jgimeno/go-blockchain/block"
 	"bytes"
 	"github.com/stretchr/testify/assert"
+	"github.com/jgimeno/go-blockchain/blockchain/mocks"
 )
 
 func TestIfItDoesNotHaveGenesisBlockItCreatesIt(t *testing.T) {
-	mockedDb := &mockedPersistence{}
+	mockedDb := &mocks.Persistence{}
 	defer mockedDb.AssertExpectations(t)
 
 	mockedDb.On("HasGenesis").Return(false)
@@ -24,7 +25,7 @@ func TestIfItDoesNotHaveGenesisBlockItCreatesIt(t *testing.T) {
 }
 
 func TestItGetsLastHashAsTipWhenItHasGenesis(t *testing.T) {
-	mockedDb := &mockedPersistence{}
+	mockedDb := &mocks.Persistence{}
 	defer mockedDb.AssertExpectations(t)
 
 	mockedDb.On("HasGenesis").Return(true)
