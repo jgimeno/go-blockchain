@@ -18,9 +18,11 @@ type BlockChain struct {
 	p Persistence
 }
 
-type BlockChanIterator struct {
-	currentHash []byte
-	p Persistence
+func (bc *BlockChain) Iterator() *Iterator {
+	return &Iterator{
+		currentHash: bc.tip,
+		p: bc.p,
+	}
 }
 
 func (bc *BlockChain) AddBlock(data string) {
@@ -65,4 +67,16 @@ func New(persistence Persistence) *BlockChain {
 		p:persistence,
 		tip:tip,
 	}
+}
+
+type Iterator struct {
+	currentHash []byte
+	p Persistence
+}
+
+func (bi *Iterator) Next() *block.Block {
+	var b *block.Block
+	b = bi.p.GetBlockByHash(bi.currentHash)
+	bi.currentHash = b.PrevBlockHash
+	return b
 }

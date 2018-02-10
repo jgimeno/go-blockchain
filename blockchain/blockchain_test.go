@@ -34,6 +34,18 @@ func TestIfItDoesNotHaveGenesisBlockItCreatesIt(t *testing.T) {
 
 		p.AddBlock("New block.")
 	})
+
+	t.Run("We can get an iterator", func(t *testing.T) {
+		i := p.Iterator()
+
+		if i.p != mockedDb {
+			t.Fatalf("Error checking that iterator has an instance of persistence db.")
+		}
+
+		if !bytes.Equal(i.currentHash, p.tip) {
+			t.Fatalf("Error checking that the iterator has the lastHash same as the tip of blockchain.")
+		}
+	})
 }
 
 func TestItGetsLastHashAsTipWhenItHasGenesis(t *testing.T) {
