@@ -2,10 +2,13 @@ package blockchain
 
 import (
 	"testing"
-	"fmt"
 )
 
-func TestANewBlockChainIncludesAGenesisBlock(t *testing.T) {
-	bc := New()
-	fmt.Printf("%s", string(bc.tip))
+func TestIfItDoesNotHaveGenesisBlockItCreatesIt(t *testing.T) {
+	mockedDb := &mockedDbWithoutGenesis{}
+	New(mockedDb)
+
+	if !mockedDb.calledHasGenesis || !mockedDb.calledInit || !mockedDb.calledSave {
+		t.Fatalf("Error asserting that blockchain called hasGenesis on creation.")
+	}
 }

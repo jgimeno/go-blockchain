@@ -7,8 +7,13 @@ import (
 
 const blockBucket = "Block"
 
+func New() *Persistence {
+	p, _ := bolt.Open("culo", 0600, nil)
+	return &Persistence{p}
+}
+
 type Persistence struct {
-	b bolt.DB
+	b *bolt.DB
 }
 
 func (p *Persistence) HasGenesis() bool {

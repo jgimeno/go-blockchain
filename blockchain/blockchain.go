@@ -59,5 +59,4 @@ func New(persistence Persistence) *BlockChain {
 		p:persistence,
 		tip:tip,
 	}
-
 }
