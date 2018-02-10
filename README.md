@@ -1,0 +1,1 @@
+Simple implementation of a blockchain, including mining and consensus.
