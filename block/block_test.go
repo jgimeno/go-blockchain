@@ -11,7 +11,7 @@ import (
 func TestWeCanCreateABlock(t *testing.T) {
 	prevHash := sha256.Sum256([]byte("Previus Hash"))
 
-	b := block.New([]byte("Send 200 to Manuel"), prevHash[:])
+	b := block.New("Send 200 to Manuel", prevHash[:])
 
 	if !bytes.Equal(b.Hash, generateHash(b.Timestamp, prevHash[:])) {
 		t.Fatalf("Error generating the block hash.")
@@ -38,7 +38,7 @@ func TestWeCanCreateAGenesisBlock(t *testing.T) {
 }
 
 func TestWeCanAssertIfABlockIsAGenesisBlock(t *testing.T) {
-	notGenesis := block.New([]byte("Some data"), []byte("PreviusHash"))
+	notGenesis := block.New("Some data", []byte("PreviusHash"))
 	genesis := block.NewGenesis()
 
 	if !genesis.IsGenesis() {
@@ -51,7 +51,7 @@ func TestWeCanAssertIfABlockIsAGenesisBlock(t *testing.T) {
 }
 
 func TestWeCanSerializeAndDeserializeABlock(t *testing.T) {
-	b := block.New([]byte("Send 200 to Manuel"), []byte("TheHash"))
+	b := block.New("Send 200 to Manuel", []byte("TheHash"))
 
 	s := b.Serialize()
 

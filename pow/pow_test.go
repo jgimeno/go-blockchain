@@ -6,7 +6,7 @@ import (
 )
 
 func TestUsageOfProofOfWork(t *testing.T) {
-	b := block.New([]byte("The data"), []byte("PrevHash"))
+	b := block.New("The data", []byte("PrevHash"))
 	pow := New(b)
 
 	_, h := pow.Run()
@@ -21,7 +21,7 @@ func TestUsageOfProofOfWork(t *testing.T) {
 }
 
 func TestValidateProofOfWork(t *testing.T) {
-	b := block.New([]byte("The data"), []byte("PrevHash"))
+	b := block.New("The data", []byte("PrevHash"))
 	pow := New(b)
 
 	n, _ := pow.Run()

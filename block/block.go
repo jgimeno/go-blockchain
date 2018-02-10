@@ -1,11 +1,10 @@
 package block
 
 import (
-	"strconv"
 	"bytes"
-	"crypto/sha256"
 	"time"
 	"encoding/gob"
+	"github.com/jgimeno/go-blockchain/pow"
 )
 
 type Block struct {
@@ -13,14 +12,7 @@ type Block struct {
 	Data          []byte
 	PrevBlockHash []byte
 	Hash          []byte
-}
-
-func (b *Block) SetHash() {
-	timestamp := []byte(strconv.FormatInt(b.Timestamp, 10))
-	headers := bytes.Join([][]byte{b.PrevBlockHash, b.Data, timestamp}, []byte{})
-	hash := sha256.Sum256(headers)
-
-	b.Hash = hash[:]
+	Nonce         int
 }
 
 func (b *Block) IsGenesis() bool {
@@ -39,18 +31,26 @@ func (b *Block) Serialize() []byte {
 	return result.Bytes()
 }
 
-func New(data []byte, prevHash []byte) *Block {
+func New(data string, prevHash []byte) *Block {
 	b := &Block{
 		Timestamp: time.Now().Unix(),
-		Data: data,
+		Data: []byte(data),
 		PrevBlockHash: prevHash,
+		Hash: []byte{},
+		Nonce: 0,
 	}
-	b.SetHash()
+
+	pw := pow.New(b)
+	n, h := pw.Run()
+
+	b.Hash = h
+	b.Nonce = n
+
 	return b
 }
 
 func NewGenesis() *Block {
-	b := New([]byte("Genesis block"), []byte{})
+	b := New("Genesis block", []byte{})
 	return b
 }
 
