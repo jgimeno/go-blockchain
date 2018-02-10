@@ -1,13 +1,12 @@
-package pow
+package block
 
 import (
 	"testing"
-	"github.com/jgimeno/go-blockchain/block"
 )
 
 func TestUsageOfProofOfWork(t *testing.T) {
-	b := block.New("The data", []byte("PrevHash"))
-	pow := New(b)
+	b := New("The data", []byte("PrevHash"))
+	pow := NewProofOfWork(b)
 
 	_, h := pow.Run()
 
@@ -21,8 +20,8 @@ func TestUsageOfProofOfWork(t *testing.T) {
 }
 
 func TestValidateProofOfWork(t *testing.T) {
-	b := block.New("The data", []byte("PrevHash"))
-	pow := New(b)
+	b := New("The data", []byte("PrevHash"))
+	pow := NewProofOfWork(b)
 
 	n, _ := pow.Run()
 
@@ -30,5 +29,3 @@ func TestValidateProofOfWork(t *testing.T) {
 		t.Fatalf("Error validating proof of work.")
 	}
 }
-
-

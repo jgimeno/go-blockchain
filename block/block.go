@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"time"
 	"encoding/gob"
-	"github.com/jgimeno/go-blockchain/pow"
 )
 
 type Block struct {
@@ -40,7 +39,7 @@ func New(data string, prevHash []byte) *Block {
 		Nonce: 0,
 	}
 
-	pw := pow.New(b)
+	pw := NewProofOfWork(b)
 	n, h := pw.Run()
 
 	b.Hash = h

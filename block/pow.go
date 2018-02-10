@@ -1,7 +1,6 @@
-package pow
+package block
 
 import (
-	"github.com/jgimeno/go-blockchain/block"
 	"math/big"
 	"math"
 	"bytes"
@@ -13,11 +12,11 @@ const targetBits = 2 * 8
 const maxNonce = math.MaxInt64
 
 type ProofOfWork struct {
-	block *block.Block
+	block *Block
 	target *big.Int
 }
 
-func New(b *block.Block) *ProofOfWork {
+func NewProofOfWork(b *Block) *ProofOfWork {
 	target := big.NewInt(1)
 	target.Lsh(target, uint(256 - targetBits))
 
