@@ -21,7 +21,19 @@ func TestIfItDoesNotHaveGenesisBlockItCreatesIt(t *testing.T) {
 		},
 	)).Return(nil)
 
-	New(mockedDb)
+	p := New(mockedDb)
+
+	t.Run("We add a block correctly.", func(t *testing.T) {
+		mockedDb.On("GetLastHash").Return([]byte("theLastHash"), nil)
+		mockedDb.On("Save", mock.MatchedBy(
+			func(b *block.Block) bool {
+				return bytes.Equal(b.PrevBlockHash, []byte("theLastHash"))
+			},
+		)).Return(nil)
+
+
+		p.AddBlock("New block.")
+	})
 }
 
 func TestItGetsLastHashAsTipWhenItHasGenesis(t *testing.T) {
