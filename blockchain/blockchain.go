@@ -1,93 +1,63 @@
 package blockchain
 
 import (
-	"github.com/coreos/bbolt"
 	"github.com/jgimeno/go-blockchain/block"
 )
 
-const blockBucket = "Block"
+
+type Persistence interface {
+	GetLastHash() ([]byte, error)
+	Save(*block.Block) error
+	HasGenesis() bool
+	Init() error
+}
 
 type BlockChain struct {
 	tip []byte
-	db *bolt.DB
+	p Persistence
 }
 
 func (bc *BlockChain) AddBlock(data string) {
 	var lastHash []byte
 
-	err := bc.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(blockBucket))
-		lastHash = b.Get([]byte("l"))
-
-		return nil
-	})
+	lastHash, err := bc.p.GetLastHash()
 
 	if err != nil {
-		panic("Cannot get last block.")
+		panic("Error getting last hash.")
 	}
 
 	newBlock := block.New(data, lastHash)
 
-	err = bc.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(blockBucket))
-		err := b.Put(newBlock.Hash, newBlock.Serialize())
-		if err != nil {
-			return  err
-		}
-
-		err = b.Put([]byte("l"), newBlock.Hash)
-		if err != nil {
-			return  err
-		}
-
-		bc.tip = newBlock.Hash
-
-		return nil
-	})
+	err = bc.p.Save(newBlock)
 
 	if err != nil {
-		panic("Error adding block to the block chain.")
+		panic("Error saving new block.")
 	}
+
+	bc.tip = newBlock.Hash
 }
 
-func New() *BlockChain {
+func New(persistence Persistence) *BlockChain {
 	var tip []byte
 
-	db, err := bolt.Open("culo", 0600, nil)
-	if err != nil {
-		panic("Error while opening the file.")
-	}
+	if !persistence.HasGenesis() {
+		persistence.Init()
 
-	err = db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(blockBucket))
-
-		if b == nil {
-			genesis := block.NewGenesis()
-
-			b, err := tx.CreateBucket([]byte(blockBucket))
-			if err != nil {
-				return err
-			}
-
-			err = b.Put(genesis.Hash, genesis.Serialize())
-			if err != nil {
-				return err
-			}
-
-			err = b.Put([]byte("l"), genesis.Hash)
-			if err != nil {
-				return err
-			}
-
-			tip = genesis.Hash
-		} else {
-			tip = b.Get([]byte("l"))
+		genesis := block.NewGenesis()
+		persistence.Save(genesis)
+		tip = genesis.Hash
+	} else {
+		lastHash, err := persistence.GetLastHash()
+		if err != nil {
+			panic("Error creating blockchain.")
 		}
 
-		return nil
-	})
+		tip = lastHash
+	}
 
 	return &BlockChain{
-		tip, db,
+		p:persistence,
+		tip:tip,
 	}
+
 }
