@@ -1,32 +1,30 @@
 package blockchain
 
-import "github.com/jgimeno/go-blockchain/block"
+import (
+	"github.com/jgimeno/go-blockchain/block"
+	"github.com/stretchr/testify/mock"
+)
 
-type mockedDbWithoutGenesis struct {
-	calledSave bool
-	calledHasGenesis bool
-	calledInit bool
+type mockedPersistence struct {
+	mock.Mock
 }
 
-func (*mockedDbWithoutGenesis) GetLastHash() ([]byte, error) {
-	panic("implement me")
+func (m *mockedPersistence) GetLastHash() ([]byte, error) {
+	args := m.Called()
+	return args.Get(0).([]byte), args.Error(1)
 }
 
-func (m *mockedDbWithoutGenesis) Save(*block.Block) error {
-	m.calledSave = true
-	return nil
+func (m *mockedPersistence) Save(b *block.Block) error {
+	args := m.Called(b)
+	return args.Error(0)
 }
 
-func (m *mockedDbWithoutGenesis) HasGenesis() bool {
-	m.calledHasGenesis = true
-	return false
+func (m *mockedPersistence) HasGenesis() bool {
+	args := m.Called()
+	return args.Bool(0)
 }
 
-func (m *mockedDbWithoutGenesis) Init() error {
-	m.calledInit = true
-	return nil
-}
-
-func (m *mockedDbWithoutGenesis) CalledSave() bool {
-	return m.calledSave
+func (m *mockedPersistence) Init() error {
+	args := m.Called()
+	return args.Error(0)
 }
