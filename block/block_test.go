@@ -2,31 +2,18 @@ package block_test
 
 import (
 	"testing"
-	"crypto/sha256"
-	"strconv"
 	"bytes"
 	"github.com/jgimeno/go-blockchain/block"
 )
 
-func TestWeCanCreateABlock(t *testing.T) {
-	prevHash := sha256.Sum256([]byte("Previus Hash"))
+func TestWeCanCreateANewBlock(t *testing.T) {
+	g := block.New("The new blog", []byte("previousHash"))
 
-	b := block.New("Send 200 to Manuel", prevHash[:])
+	pow := block.NewProofOfWork(g)
 
-	if !bytes.Equal(b.Hash, generateHash(b.Timestamp, prevHash[:])) {
-		t.Fatalf("Error generating the block hash.")
+	if !pow.Validate(g.Nonce) {
+		t.Fatalf("Error validating created block.")
 	}
-}
-
-func generateHash(timestamp int64, prevHash []byte) []byte {
-	data := []byte("Send 200 to Manuel")
-	t := []byte(strconv.FormatInt(timestamp, 10))
-	tSlice := t[:]
-
-	headers := bytes.Join([][]byte{prevHash, data, tSlice}, []byte{})
-
-	hash := sha256.Sum256(headers)
-	return hash[:]
 }
 
 func TestWeCanCreateAGenesisBlock(t *testing.T) {
