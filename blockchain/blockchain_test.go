@@ -61,3 +61,27 @@ func TestItGetsLastHashAsTipWhenItHasGenesis(t *testing.T) {
 
 	assert.Equal(t, lastHash, blockchain.tip)
 }
+
+func TestIterator(t *testing.T) {
+	mockedDb := &mocks.Persistence{}
+	defer mockedDb.AssertExpectations(t)
+
+	i := &Iterator{
+		currentHash: []byte("TheCurrentHash"),
+		p: mockedDb,
+	}
+
+	t.Run(
+		"When I get next block it changes the next hash as the prevhash of the returned block",
+		func(t *testing.T) {
+			assert.Equal(t, []byte("TheCurrentHash"), i.currentHash)
+
+			b := block.New("previous block", []byte("prevHash"))
+
+			mockedDb.On("GetBlockByHash", []byte("TheCurrentHash")).Return(b)
+			nextBlock := i.Next()
+
+			assert.Equal(t, nextBlock.PrevBlockHash, i.currentHash)
+		},
+	)
+}
