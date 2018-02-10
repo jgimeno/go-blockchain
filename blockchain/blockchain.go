@@ -10,10 +10,16 @@ type Persistence interface {
 	Save(*block.Block) error
 	HasGenesis() bool
 	Init() error
+	GetBlockByHash([]byte) *block.Block
 }
 
 type BlockChain struct {
 	tip []byte
+	p Persistence
+}
+
+type BlockChanIterator struct {
+	currentHash []byte
 	p Persistence
 }
 

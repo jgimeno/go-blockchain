@@ -16,6 +16,23 @@ type Persistence struct {
 	b *bolt.DB
 }
 
+func (p *Persistence) GetBlockByHash(hash []byte) *block.Block {
+	var b *block.Block
+
+	var bucket *bolt.Bucket
+
+	p.b.View(func(tx *bolt.Tx) error {
+		bucket = tx.Bucket([]byte(blockBucket))
+		encodedBucket := bucket.Get(hash)
+
+		b = block.DeserializeBlock(encodedBucket)
+
+		return nil
+	})
+
+	return b
+}
+
 func (p *Persistence) HasGenesis() bool {
 	var b *bolt.Bucket
 	p.b.View(func(tx *bolt.Tx) error {

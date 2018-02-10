@@ -29,4 +29,12 @@ func TestItSavesABlock(t *testing.T) {
 	if !bytes.Equal(lastHash, b.Hash) {
 		t.Fatalf("Failed asserting that last hash in db %x is the same as hash of new block. %x", lastHash, b.Hash)
 	}
+
+	t.Run("Get block by hash", func(t *testing.T) {
+		savedBlock := p.GetBlockByHash(lastHash)
+
+		if !bytes.Equal(b.Hash, savedBlock.Hash) {
+			t.Fatalf("Failed when getting saved block by hash.")
+		}
+	})
 }

@@ -10,6 +10,22 @@ type Persistence struct {
 	mock.Mock
 }
 
+// GetBlockByHash provides a mock function with given fields: _a0
+func (_m *Persistence) GetBlockByHash(_a0 []byte) *block.Block {
+	ret := _m.Called(_a0)
+
+	var r0 *block.Block
+	if rf, ok := ret.Get(0).(func([]byte) *block.Block); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*block.Block)
+		}
+	}
+
+	return r0
+}
+
 // GetLastHash provides a mock function with given fields:
 func (_m *Persistence) GetLastHash() ([]byte, error) {
 	ret := _m.Called()
